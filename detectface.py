@@ -11,7 +11,7 @@ rosto=[]
 #cap.set(6,24)
 ret,frame = cap.read()
 
-ttl = 10
+ttl = 20
 timestart = time.time()
 timeend = timestart+ttl
 
@@ -29,21 +29,28 @@ while timeend>time.time():
     #print("Found "+str(len(faces))+" face(s)")
     for (x,y,w,h) in faces:
         cv2.rectangle(frame,(x,y),(x+w,y+h),(255,0,0),2)
-        npaux=gray[x:x+w,y:y+h]
+        npaux=gray[y:y+h,x:x+w]
         #rostoaux=cv2.cv.fromarray(gray[x:y,x+w:y+h])
         rosto.append(npaux)
+        if counter==0:
+            print("Felipe detectado")
+            vetor=pr.calculaLBP(rosto[0],2,2)
+        else:
+            vetor2=pr.calculaLBP(rosto[counter],2,2)
+            distancia=pr.distanciaEuclidiana(vetor,vetor2)
+            print("Distancia: "+str(distancia))
         cv2.imshow("LiveDetect",npaux)
         counter+=1
     #rostoaux=cv2.cv.fromarray(gray[x:w,y:h])
     #cv2.imshow("LiveDetect",rostoaux)
 
-print(len(rosto))
-cv2.imwrite('result.jpg',rosto.pop())
+#print(len(rosto))
+cv2.imwrite('result.jpg',npaux)
 #cv2.imshow('rosto1',rosto1)
 #cvmat=cv2.cv.fromarray(frame)
 
-#vetor=pr.calculaLBP(rosto[0],2,2)
-#vetor2=pr.calculaLBP(rosto[1],2,2)
-#print(pr.distanciaEuclidiana(vetor,vetor2))
+vetor=pr.calculaLBP(npaux,2,2)
+vetor2=pr.calculaLBP(npaux,2,2)
+print(pr.distanciaEuclidiana(vetor,vetor2))
 #cv2.waitKey(0)
 print(len(rosto))

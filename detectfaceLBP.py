@@ -72,7 +72,7 @@ def lbp_basic():
     return 1
 
 grayscales=1.5
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(1)
 rosto=[]
 #cap.set(4,800)
 #cap.set(5,600)

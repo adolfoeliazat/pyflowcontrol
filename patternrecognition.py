@@ -1,5 +1,6 @@
 import math
 import cv2
+import numpy
 
 def calculaLBP(src, quadrantesX, quadrantesY):
     #int i,j,pixelsQuadrante,inicioX,inicioY,fimX,fimY;
@@ -13,7 +14,7 @@ def calculaLBP(src, quadrantesX, quadrantesY):
         dst=cv2.cvtColor(src, cv2.cv.CV_BGR2GRAY)
         src=dst.copy()
     else:
-        dst=src.clone()
+        dst=src.copy()
     dst=lbp(dst)
     for currquadY in range(quadrantesY):
         for currquadX in range(quadrantesX):
@@ -29,7 +30,7 @@ def calculaLBP(src, quadrantesX, quadrantesY):
                     histograma[int(dst[i, j])]+=1
             #print(histograma)
             #print(len(histograma))
-            print(pixelsQuadrante)
+            #print(pixelsQuadrante)
             for i in range(len(histograma)):
                 result[currquadY*quadrantesX*256+currquadX*256+i]=float(histograma[i])/float(pixelsQuadrante)
                 #print(float(histograma[i])/float(pixelsQuadrante))
@@ -67,7 +68,9 @@ def lbp(srcnp):
                 decimal+=1
             dst[i,j] = decimal
             decimal=0
+    cv2.imwrite("LBP.jpg",numpy.asarray(dst))
     return dst
+
 
 def distanciaEuclidiana(caracteristicaA, caracteristicaB):
     if len(caracteristicaA)!= len(caracteristicaB):
@@ -76,5 +79,7 @@ def distanciaEuclidiana(caracteristicaA, caracteristicaB):
     resultAll=inicializaVetor(len(caracteristicaA))
     for i in range(len(resultAll)):
         distanciaPontual=caracteristicaA[i]-caracteristicaB[i]
-        resultAll[i]=distanciaPontual
-    return math.sqrt(sum(resultAll))
+        resultAll[i]=distanciaPontual*distanciaPontual
+    soma=sum(resultAll)
+    #print("Soma: "+str(soma))
+    return math.sqrt(soma)
