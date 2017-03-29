@@ -5,11 +5,20 @@ import time
 import patternrecognition as pr
 grayscales=1.5
 cap = cv2.VideoCapture(1)
+#time.sleep(2)
 rosto=[]
 #cap.set(4,800)
 #cap.set(5,600)
 #cap.set(6,24)
-ret,frame = cap.read()
+#ret,frame = cap.read()
+#ret,frame = cap.read()
+ttl = 3
+timestart = time.time()
+timeend = timestart+ttl
+
+while timeend>time.time():
+    ret,frame = cap.read()
+    
 
 ttl = 20
 timestart = time.time()
@@ -35,11 +44,16 @@ while timeend>time.time():
         if counter==0:
             print("Felipe detectado")
             vetor=pr.calculaLBP(rosto[0],2,2)
+            cv2.putText(frame,"Felipe", (x,y), cv2.FONT_HERSHEY_SIMPLEX, 2, 255)
         else:
             vetor2=pr.calculaLBP(rosto[counter],2,2)
             distancia=pr.distanciaEuclidiana(vetor,vetor2)
+            if distancia<0.1:
+                cv2.putText(frame,"Felipe", (x,y), cv2.FONT_HERSHEY_SIMPLEX, 2, 255)
+            else:
+                cv2.putText(frame,"Nao sei", (x,y), cv2.FONT_HERSHEY_SIMPLEX, 2, 255)
             print("Distancia: "+str(distancia))
-        cv2.imshow("LiveDetect",npaux)
+        cv2.imshow("LiveDetect",frame)
         counter+=1
     #rostoaux=cv2.cv.fromarray(gray[x:w,y:h])
     #cv2.imshow("LiveDetect",rostoaux)
