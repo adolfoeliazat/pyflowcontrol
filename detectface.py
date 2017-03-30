@@ -22,7 +22,7 @@ if cameras is 0:
 cameras+=1
 print(str(cameras)+" cameras found.\n")
 #Opens cam for bright adjustment
-tts = 1
+tts = 2
 timestart = time.time()
 timeend = timestart+tts
 while timeend>time.time():
