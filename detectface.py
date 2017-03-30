@@ -41,7 +41,7 @@ for i in range(cameras):
     cv2.imshow("Cam "+str(i),frame)
 
 
-face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+face_cascade = cv2.CascadeClassifier('cascades/haarcascade_frontalface_default.xml')
 counter=0
 while timeend>time.time():
     for i in range(cameras):
