@@ -2,7 +2,7 @@ import io
 import cv2
 import numpy
 import time
-import patternrecognitionnp as pr
+import patternrecognition as pr
 import sys
 
 grayscales=1.5
@@ -22,6 +22,7 @@ if cameras is 0:
     sys.exit()
 #cameras+=1
 print(str(cameras)+" cameras found.\n")
+print("Hit 'q' to quit...\n")
 #Opens cam for bright adjustment
 tts = 2
 timestart = time.time()
@@ -35,7 +36,7 @@ timestart = time.time()
 timeend = timestart+ttl
 
 #Starting windows Thread
-cv2.startWindowThread()
+#cv2.startWindowThread()
 for i in range(cameras):
     cv2.namedWindow("Cam "+str(i))
     ret,frame=cap[i].read()
@@ -56,18 +57,24 @@ while timeend>time.time():
             #rostoaux=cv2.cv.fromarray(gray[x:y,x+w:y+h])
             rosto.append(npaux)
             if counter==0:
-                print("Felipe detectado")
+                print("Person 1 detected")
                 vetor=pr.calculaLBP(rosto[0],2,2)
-                cv2.putText(frame,"Felipe", (x,y), cv2.FONT_HERSHEY_SIMPLEX, 2, 255)
+                cv2.putText(frame,"Person 1", (x,y), cv2.FONT_HERSHEY_SIMPLEX, 2, 255)
             else:
                 vetor2=pr.calculaLBP(rosto[counter],2,2)
                 distancia=pr.distanciaEuclidiana(vetor,vetor2)
                 if distancia<0.1:
-                    cv2.putText(frame,"Felipe", (x,y), cv2.FONT_HERSHEY_SIMPLEX, 2, 255)
+                    cv2.putText(frame,"Person 1", (x,y), cv2.FONT_HERSHEY_SIMPLEX, 2, 255)
                 else:
-                    cv2.putText(frame,"Nao sei", (x,y), cv2.FONT_HERSHEY_SIMPLEX, 2, 255)
+                    cv2.putText(frame,"Other person", (x,y), cv2.FONT_HERSHEY_SIMPLEX, 2, 255)
                 print("Distancia: "+str(distancia))
             cv2.imshow("Cam "+str(i),frame)
             counter+=1
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
 cv2.imwrite('result.jpg',npaux)
-print(len(rosto))
+#print(len(rosto))
+
+for i in range(cameras):
+    cap[i].release()
+    cv2.destroyAllWindows()
