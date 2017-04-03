@@ -2,7 +2,7 @@ import io
 import cv2
 import numpy
 import time
-import patternrecognition as pr
+import patternrecognitionnp as pr
 import sys
 
 grayscales=1.5

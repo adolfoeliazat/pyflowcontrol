@@ -5,13 +5,21 @@ import numpy
 
 def calculaLBP(src, quadrantesX, quadrantesY):
     #int i,j,pixelsQuadrante,inicioX,inicioY,fimX,fimY;
-    asMat=cv2.cv.fromarray(src)
+    if len(src.shape) is 2:
+        rows,cols = src.shape
+        channels=1
+    else:
+        rows,cols,channels = src.shape
+
+    #print(rows)
+    #print(cols)
+    #asMat=cv2.cv.fromarray(src)
     histograma=inicializaVetor(256)
     result=inicializaVetor(256*quadrantesX*quadrantesY)
     #Copia a imagem origem e a seta para o padrao binario dela mesma.
     #CvMat dst;
-    if asMat.channels>1:
-        dst=cv2.cv.CreateMat(asMat.rows,asMat.cols,cv2.CV_8U)
+    if channels>1:
+        dst=cv2.cv.CreateMat(rows,cols,cv2.CV_8U)
         dst=cv2.cvtColor(src, cv2.cv.CV_BGR2GRAY)
         src=dst.copy()
     else:
@@ -20,10 +28,10 @@ def calculaLBP(src, quadrantesX, quadrantesY):
     for currquadY in range(quadrantesY):
         for currquadX in range(quadrantesX):
             #Definindo comeco e fim do quadrante
-            inicioX=int((float(asMat.cols)/float(quadrantesX))*float(currquadX))
-            fimX=int((float(asMat.cols)/float(quadrantesX))*float(currquadX+1))
-            inicioY=int((float(asMat.rows)/float(quadrantesY))*float(currquadY))
-            fimY=int((float(asMat.rows)/float(quadrantesY))*float(currquadY+1))
+            inicioX=int((float(cols)/float(quadrantesX))*float(currquadX))
+            fimX=int((float(cols)/float(quadrantesX))*float(currquadX+1))
+            inicioY=int((float(rows)/float(quadrantesY))*float(currquadY))
+            fimY=int((float(rows)/float(quadrantesY))*float(currquadY+1))
             pixelsQuadrante=(fimX-inicioX)*(fimY-inicioY)
             #Calculando Histograma para o Quadrante
             for i in range(inicioY,fimY):
@@ -44,13 +52,19 @@ def inicializaVetor(tamanho):
     vetor=[0 for i in range(tamanho)]
     return vetor
 
-def lbp(srcnp):
-    src=cv2.cv.fromarray(srcnp)
-    dstnp=srcnp.copy()
-    dst=cv2.cv.fromarray(dstnp)
+def lbp(src):
+    #src=cv2.cv.fromarray(srcnp)
+    dst=src.copy()
+    #rows,cols,channels = src.shape
+    if len(src.shape) is 2:
+        rows,cols = src.shape
+        channels=1
+    else:
+        rows,cols,channels = src.shape
+    #dst=cv2.cv.fromarray(dstnp)
     decimal=0
-    for i in range(1,dst.rows-1):
-        for j in range(1, dst.cols-1):
+    for i in range(1,rows-1):
+        for j in range(1, cols-1):
             if src[i-1,j-1] >= src[i,j]:
                 decimal+=128
             if src[i-1,j] >= src[i,j]:
@@ -69,7 +83,7 @@ def lbp(srcnp):
                 decimal+=1
             dst[i,j] = decimal
             decimal=0
-    cv2.imwrite("LBP.jpg",numpy.asarray(dst))
+    #cv2.imwrite("LBP.jpg",numpy.asarray(dst))
     return dst
 
 
