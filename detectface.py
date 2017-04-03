@@ -6,20 +6,21 @@ import patternrecognition as pr
 import sys
 
 grayscales=1.5
-ttl=20
+ttl=200
 totalcameras=2
 #Faces array
 rosto=[]
 cap=[]
 # Find how many cameras are connected
 cameras=0
-for cameras in range(totalcameras):
-    cap.append(cv2.VideoCapture(cameras))
-    print(cap[cameras])
+for i in range(totalcameras):
+    cap.append(cv2.VideoCapture(i))
+    print(cap[i])
+    cameras+=1
 if cameras is 0:
     print("No camera found")
     sys.exit()
-cameras+=1
+#cameras+=1
 print(str(cameras)+" cameras found.\n")
 #Opens cam for bright adjustment
 tts = 2
