@@ -1,56 +1,71 @@
+#!/usr/bin/env python3
 import io
 import cv2
 import numpy
 import time
 import patternrecognition as pr
 import sys
+import RPi.GPIO as gpio
 
-grayscales=1.7
-totalcameras=1
-#Faces array
+#Program adjustable variables
+grayscales = 1.7
+totalcameras = 1
+holdtime = 3
+PIR_sigpin = 11
+
+# Program definitions
+holdend = time.time()
 rosto=[]
 cap=[]
-# Find how many cameras are connected
-cameras=0
+face_cascade = cv2.CascadeClassifier('cascades/haarcascade_frontalface_default.xml')
+
+#Setting PIR output
+gpio.setmode(gpio.BOARD)
+gpio.setup(PIR_sigpin,gpio.IN)
+
+# Defining captures array
 for i in range(totalcameras):
     cap.append(cv2.VideoCapture(i))
-    print(cap[i])
-    cameras+=1
-if cameras is 0:
-    print("No camera found")
-    sys.exit()
 
-print(str(cameras)+" cameras found.\n")
-print("Hit 'q' to quit...\n")
-
-#	Warming cams
-#Opens cam for bright adjustment
-warm_time = 2 #secs
-warm_start = time.time()
-warm_end = warm_start+warm_time
-while warm_end>time.time():
-    for i in range(cameras):
-        ret,frame = cap[i].read()
-
-#Starting windows Thread
-#cv2.startWindowThread()
-for i in range(cameras):
+# Opening windows and warming up cams
+for i in range(totalcameras):
     cv2.namedWindow("Cam "+str(i))
-    ret,frame=cap[i].read()
-    cv2.imshow("Cam "+str(i),frame)
-
-face_cascade = cv2.CascadeClassifier('cascades/haarcascade_frontalface_default.xml')
-while True:
-    for i in range(cameras):
+warm_time = 5 #secs
+warm_end = time.time()+warm_time
+while warm_end>time.time():
+    for i in range(totalcameras):
         ret,frame = cap[i].read()
-        gray = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
-        faces = face_cascade.detectMultiScale(gray, grayscales, 5)
-        #print("Found "+str(len(faces))+" face(s)")
-        for (x,y,w,h) in faces:
-            cv2.rectangle(frame,(x,y),(x+h,y+w),(255,0,0),2)
+        rows,cols,channels = frame.shape
+        cv2.putText(frame,"WARMING UP", (cols/2-200,rows/2-10), cv2.FONT_HERSHEY_SIMPLEX, 2, 255)
         cv2.imshow("Cam "+str(i),frame)
+
+# Main Loop
+print("Hit 'q' to quit...\n")
+while True:
+    presence = gpio.input(PIR_sigpin)
+    if presence == 1 or hold == True:
+        for i in range(totalcameras):
+            ret,frame = cap[i].read()
+            gray = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
+            faces = face_cascade.detectMultiScale(gray, grayscales, 5)
+            #print("Found "+str(len(faces))+" face(s)")
+            if len(faces) > 0:
+                hold = True
+                holdend = time.time() + holdtime
+            else:
+                cv2.putText(frame,"...", (cols/2-200,rows/2-50), cv2.FONT_HERSHEY_SIMPLEX, 2, (0,255,255))
+                if time.time() > holdend:
+                    hold = False
+                    cv2.putText(frame,"HOLD ENDED.", (cols/2-200,rows/2-50), cv2.FONT_HERSHEY_SIMPLEX, 2, (255,0,0))
+            for (x,y,w,h) in faces:
+                cv2.rectangle(frame,(x,y),(x+h,y+w),(255,0,0),2)
+            cv2.imshow("Cam "+str(i),frame)
+    else:
+        cv2.putText(frame,"No presence", (cols/2-200,rows/2-10), cv2.FONT_HERSHEY_SIMPLEX, 2, (0,0,255))
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
-for i in range(cameras):
+
+# Releasing Memory
+for i in range(totalcameras):
     cap[i].release()
-    cv2.destroyAllWindows()
+cv2.destroyAllWindows()
