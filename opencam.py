@@ -1,6 +1,6 @@
 import cv2
 
-totalcameras=2
+totalcameras=1
 
 #Initializing Capture
 cap=[]

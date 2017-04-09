@@ -5,7 +5,7 @@ import time
 import patternrecognition as pr
 import sys
 
-grayscales=2
+grayscales=1.7
 totalcameras=1
 #Faces array
 rosto=[]

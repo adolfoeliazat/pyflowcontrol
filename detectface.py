@@ -8,7 +8,7 @@ import Tkinter
 import Image,ImageTk
 import threading
 
-grayscales=2
+grayscales=1.5
 ttl=200
 totalcameras=1
 #Faces array
@@ -60,29 +60,30 @@ while timeend>time.time():
         for (x,y,w,h) in faces:
             cv2.rectangle(frame,(x,y),(x+h,y+w),(255,0,0),2)
             npaux=gray[y:y+h,x:x+w]
-            print("X: {}\tY: {}\tW: {}\tH: {}".format(x,y,w,h))
+            #print("X: {}\tY: {}\tW: {}\tH: {}".format(x,y,w,h))
             #rostoaux=cv2.cv.fromarray(gray[x:y,x+w:y+h])
             rosto.append(npaux)
             if counter==0:
-                print("Person 1 detected")
+                print("Monica detected")
                 vetor=pr.calculaLBP(rosto[0],2,2)
-                cv2.putText(frame,"Person 1", (x,y), cv2.FONT_HERSHEY_SIMPLEX, 2, 255)
+                cv2.putText(frame,"Monica", (x,y), cv2.FONT_HERSHEY_SIMPLEX, 2, 255)
             else:
                 vetor2=pr.calculaLBP(rosto[counter],2,2)
                 distancia=pr.distanciaEuclidiana(vetor,vetor2)
                 if distancia<0.1:
-                    cv2.putText(frame,"Person 1", (x,y), cv2.FONT_HERSHEY_SIMPLEX, 2, 255)
+                    cv2.putText(frame,"Monica", (x,y), cv2.FONT_HERSHEY_SIMPLEX, 2, 255)
                 else:
-                    cv2.putText(frame,"Other person", (x,y), cv2.FONT_HERSHEY_SIMPLEX, 2, 255)
+                    cv2.putText(frame,"Felipe", (x,y), cv2.FONT_HERSHEY_SIMPLEX, 2, 255)
                 print("Distancia: "+str(distancia))
-            cv2.imshow("Cam "+str(i),npaux)
+            counter+=1
+    cv2.imshow("Cam "+str(i),frame)
             #b,g,r = cv2.split(frame)
 	    #framergb = cv2.merge((r,g,b))
             #im = Image.fromarray(framergb)
             #imgtk = ImageTk.PhotoImage(image=im)
             #Tkinter.Label(root,image=imgtk).pack()
             #root.mainloop()
-            counter+=1
+            #counter+=1
         #root.mainloop()
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break

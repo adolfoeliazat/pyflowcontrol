@@ -47,7 +47,7 @@ face_cascade = cv2.CascadeClassifier('cascades/haarcascade_frontalface_default.x
 counter=0
 
 #criando base do lbp dos rostos
-file = open("base.txt","a")
+file = open("base.csv","a")
 #file.write("nome,histograma LBP\n")
 
 while timeend>time.time():
@@ -81,7 +81,7 @@ cv2.destroyAllWindows()
 cv2.imshow("RESULTADO",npaux)
 cv2.waitKey(1)
 nome = input("DIGITE O NOME DESSA PESSOA\n")
-file.write(nome+","+''.join(map(str,vetor2))+"\n") 
+file.write(nome+","+','.join(map(str,vetor2))+"\n\n") 
 cv2.imwrite('result.jpg',npaux)
 #print(len(rosto))
 
