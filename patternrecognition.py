@@ -2,7 +2,6 @@ import math
 import cv2
 import numpy
 
-
 def calculaLBP(src, quadrantesX, quadrantesY):
     #int i,j,pixelsQuadrante,inicioX,inicioY,fimX,fimY;
     if len(src.shape) is 2:
@@ -83,7 +82,7 @@ def lbp(src):
                 decimal+=1
             dst[i,j] = decimal
             decimal=0
-    cv2.imwrite("LBP.jpg",numpy.asarray(dst))
+    #cv2.imwrite("LBP.jpg",numpy.asarray(dst))
     return dst
 
 
