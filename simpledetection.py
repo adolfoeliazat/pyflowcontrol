@@ -65,6 +65,7 @@ while True:
             cv2.imshow("Cam "+str(i),frame)
     else:
         cv2.putText(frame,"No presence", (cols/2-200,rows/2-10), cv2.FONT_HERSHEY_SIMPLEX, 2, (0,0,255))
+        cv2.imshow("Cam "+str(i),frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
