@@ -10,11 +10,12 @@ import RPi.GPIO as gpio
 #Program adjustable variables
 grayscales = 1.7
 totalcameras = 1
-holdtime = 3
+holdtime = 5
 PIR_sigpin = 11
 
 # Program definitions
 holdend = time.time()
+hold = False
 rosto=[]
 cap=[]
 face_cascade = cv2.CascadeClassifier('cascades/haarcascade_frontalface_default.xml')
@@ -53,10 +54,12 @@ while True:
                 hold = True
                 holdend = time.time() + holdtime
             else:
-                cv2.putText(frame,"...", (cols/2-200,rows/2-50), cv2.FONT_HERSHEY_SIMPLEX, 2, (0,255,255))
-                if time.time() > holdend:
-                    hold = False
-                    cv2.putText(frame,"HOLD ENDED.", (cols/2-200,rows/2-50), cv2.FONT_HERSHEY_SIMPLEX, 2, (255,0,0))
+                if presence == 0:
+                    if time.time() <= holdend:
+                        cv2.putText(frame,"HOLDING...", (cols/2-200,rows/2-50), cv2.FONT_HERSHEY_SIMPLEX, 2, (0,255,255))
+                    else:
+                        hold = False
+                        cv2.putText(frame,"HOLD ENDED.", (cols/2-200,rows/2-50), cv2.FONT_HERSHEY_SIMPLEX, 2, (255,0,0))
             for (x,y,w,h) in faces:
                 cv2.rectangle(frame,(x,y),(x+h,y+w),(255,0,0),2)
             cv2.imshow("Cam "+str(i),frame)

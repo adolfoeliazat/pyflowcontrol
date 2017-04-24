@@ -12,7 +12,7 @@ import RPi.GPIO as gpio
 grayscales = 2
 totalcameras=1
 PIR_sigpin = 11
-holdtime = 3
+holdtime = 5
 
 # Program definitions
 holdend = time.time()
@@ -57,10 +57,12 @@ while True:
                 hold = True
                 holdend = time.time() + holdtime
             else:
-                print("Holding...")
-                if time.time() > holdend:
-                    hold = False
-                    print("Holding ended.")
+                if presence == 0:
+                    if time.time() <= holdend:
+                        cv2.putText(frame,"HOLDING...", (cols/2-200,rows/2-50), cv2.FONT_HERSHEY_SIMPLEX, 2, (0,255,255))
+                    else:
+                        hold = False
+                        cv2.putText(frame,"HOLD ENDED.", (cols/2-200,rows/2-50), cv2.FONT_HERSHEY_SIMPLEX, 2, (255,0,0))
             for (x,y,w,h) in faces:
                 cv2.rectangle(frame,(x,y),(x+h,y+w),(255,0,0),2)
                 npaux=gray[y:y+h,x:x+w]
