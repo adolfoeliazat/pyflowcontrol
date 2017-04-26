@@ -7,6 +7,8 @@ import patternrecognition as pr
 import sys
 import threading
 import RPi.GPIO as gpio
+from PIL import Image
+import zbarlight
 
 # Program adjustable variables
 grayscales = 2
@@ -39,7 +41,7 @@ while warm_end>time.time():
     for i in range(totalcameras):
         ret,frame = cap[i].read()
         rows,cols,channels = frame.shape
-        cv2.putText(frame,"WARMING UP", (cols/2-200,rows/2-10), cv2.FONT_HERSHEY_SIMPLEX, 2, 255)
+        cv2.putText(frame,"WARMING UP", (int(cols/2-200),int(rows/2-10)), cv2.FONT_HERSHEY_SIMPLEX, 2, 255)
         cv2.imshow("Cam "+str(i),frame)
         
 
@@ -51,6 +53,10 @@ while True:
         for i in range(totalcameras):
             ret,frame = cap[i].read()
             gray = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
+            pil = Image.fromarray(gray)
+            codes = zbarlight.scan_codes('qrcode',pil)
+            if codes is not None:
+                print('QR code: '+str(codes))
             faces = face_cascade.detectMultiScale(gray, grayscales, 5)
             #print("Found "+str(len(faces))+" face(s)")
             if len(faces) > 0:
@@ -59,10 +65,10 @@ while True:
             else:
                 if presence == 0:
                     if time.time() <= holdend:
-                        cv2.putText(frame,"HOLDING...", (cols/2-200,rows/2-50), cv2.FONT_HERSHEY_SIMPLEX, 2, (0,255,255))
+                        cv2.putText(frame,"HOLDING...", (int(cols/2-200),int(rows/2-50)), cv2.FONT_HERSHEY_SIMPLEX, 2, (0,255,255))
                     else:
                         hold = False
-                        cv2.putText(frame,"HOLD ENDED.", (cols/2-200,rows/2-50), cv2.FONT_HERSHEY_SIMPLEX, 2, (255,0,0))
+                        cv2.putText(frame,"HOLD ENDED.", (int(cols/2-200),int(rows/2-50)), cv2.FONT_HERSHEY_SIMPLEX, 2, (255,0,0))
             for (x,y,w,h) in faces:
                 cv2.rectangle(frame,(x,y),(x+h,y+w),(255,0,0),2)
                 npaux=gray[y:y+h,x:x+w]
@@ -84,7 +90,7 @@ while True:
                 counter += 1
         cv2.imshow("Cam "+str(i),frame)
     else:
-        cv2.putText(frame,"No presence", (cols/2-200,rows/2-10), cv2.FONT_HERSHEY_SIMPLEX, 2, (0,0,255))
+        cv2.putText(frame,"No presence", (int(cols/2-200),int(rows/2-10)), cv2.FONT_HERSHEY_SIMPLEX, 2, (0,0,255))
         cv2.imshow("Cam "+str(i),frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
