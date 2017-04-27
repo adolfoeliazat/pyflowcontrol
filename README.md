@@ -3,7 +3,8 @@ Using Raspberry, OpenCV, python and PIR sensor to do flow control of persons and
 ## Objective
 This project intent is to use a Raspberry Pi 3 as a central system to process and manage flow of people and cars in buildings or condominiums.
 ## Methodology
-1. Moving object detection
-2. Check if it's a person
-3. If a person, compare it's face with all the registered persons in the hipothetical building.
-4. If the person matches a person registered in the building, allow entrance.
+1. Moving object detection via PIR sensor
+2. Wait for QR code
+3. If detects a QR code, retrieve information (LBP histogram) about this person's QR code in the database
+4. Compare retrieved data with real time data using some kind of classificator
+5. If it matches, then allow entrance
