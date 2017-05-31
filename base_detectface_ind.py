@@ -8,6 +8,7 @@ imagens_positivas = 15
 imagens_negativas = 30
 quadrantesX=2
 quadrantesY=2
+base_name = str(quadrantesX)+"qx"+ str(quadrantesY)+"qy"
 num_caracteristicas=quadrantesX*quadrantesY*256
 def createBase(base_path):
     base_file = open(base_path,"w")
@@ -91,7 +92,7 @@ for ind in ind_folder: # percorre a pasta que contem as pastas com fotos de cada
 		i=i+1
 		
 	j=0;
-	base_ind=createBase(folderpath+ind+'/'+ind+'.csv')
+	base_ind=createBase(folderpath+ind+'/'+ind+'-'+base_name+'.csv')
 	for h in histograms: # percorre os histogrmas
 		if h is None:
 			pass
