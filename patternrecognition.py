@@ -2,6 +2,7 @@ import math
 import cv2
 import numpy
 
+
 def calculaLBP(src, quadrantesX, quadrantesY):
     #int i,j,pixelsQuadrante,inicioX,inicioY,fimX,fimY;
     if len(src.shape) is 2:
@@ -85,8 +86,23 @@ def lbp(src):
     #cv2.imwrite("LBP.jpg",numpy.asarray(dst))
     return dst
 
+def lbp_native(src):
+	dst=src.copy()
+	radius = 3
+	no_points = 8 * radius
+	#Uniform LBP is used 17 
+	lbp = local_binary_pattern(src, no_points, radius, method='uniform')
+	#Calculate the histogram 19 
+	x = itemfreq(lbp.ravel())
+	# Normalize the histogram
+	hist = x[:, 1]/sum(x[:, 1])
+	print(np.array(hist, dtype=np.float32))
+	return dst
+
+
 
 def distanciaEuclidiana(caracteristicaA, caracteristicaB):
+
     if len(caracteristicaA)!= len(caracteristicaB):
         print("Caracteristicas com vetor de tamanho diferente! Impossivel comparar")
         return -1
@@ -97,3 +113,14 @@ def distanciaEuclidiana(caracteristicaA, caracteristicaB):
     soma=sum(resultAll)
     #print("Soma: "+str(soma))
     return math.sqrt(soma)
+
+def diferenca(caracteristicaA, caracteristicaB):
+    if len(caracteristicaA)!= len(caracteristicaB):
+        print("Caracteristicas com vetor de tamanho diferente! Impossivel comparar")
+        return -1
+    resultAll=inicializaVetor(len(caracteristicaA))
+    for i in range(len(resultAll)):
+        distanciaPontual=caracteristicaA[i]-caracteristicaB[i]
+        resultAll[i]=abs(distanciaPontual)
+    return resultAll
+
