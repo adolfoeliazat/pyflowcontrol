@@ -5,11 +5,11 @@ import numpy
 import time
 import patternrecognition as pr
 import sys
-import RPi.GPIO as gpio
+#import RPi.GPIO as gpio
 
 #Program adjustable variables
 grayscales = 1.7
-totalcameras = 1
+totalcameras = 2
 holdtime = 5
 PIR_sigpin = 11
 
@@ -21,8 +21,8 @@ cap=[]
 face_cascade = cv2.CascadeClassifier('cascades/haarcascade_frontalface_default.xml')
 
 #Setting PIR output
-gpio.setmode(gpio.BOARD)
-gpio.setup(PIR_sigpin,gpio.IN)
+#gpio.setmode(gpio.BOARD)
+#gpio.setup(PIR_sigpin,gpio.IN)
 
 # Defining captures array
 for i in range(totalcameras):
@@ -37,13 +37,14 @@ while warm_end>time.time():
     for i in range(totalcameras):
         ret,frame = cap[i].read()
         rows,cols,channels = frame.shape
-        cv2.putText(frame,"WARMING UP", (cols/2-200,rows/2-10), cv2.FONT_HERSHEY_SIMPLEX, 2, 255)
+        cv2.putText(frame,"WARMING UP", (int(cols/2-200),int(rows/2-10)), cv2.FONT_HERSHEY_SIMPLEX, 2, 255)
         cv2.imshow("Cam "+str(i),frame)
 
 # Main Loop
 print("Hit 'q' to quit...\n")
+presence = 1
 while True:
-    presence = gpio.input(PIR_sigpin)
+    #presence = gpio.input(PIR_sigpin)
     if presence == 1 or hold == True:
         for i in range(totalcameras):
             ret,frame = cap[i].read()
@@ -56,15 +57,15 @@ while True:
             else:
                 if presence == 0:
                     if time.time() <= holdend:
-                        cv2.putText(frame,"HOLDING...", (cols/2-200,rows/2-50), cv2.FONT_HERSHEY_SIMPLEX, 2, (0,255,255))
+                        cv2.putText(frame,"HOLDING...", (int(cols/2-200),int(rows/2-50)), cv2.FONT_HERSHEY_SIMPLEX, 2, (0,255,255))
                     else:
                         hold = False
-                        cv2.putText(frame,"HOLD ENDED.", (cols/2-200,rows/2-50), cv2.FONT_HERSHEY_SIMPLEX, 2, (255,0,0))
+                        cv2.putText(frame,"HOLD ENDED.", (int(cols/2-200),int(rows/2-50)), cv2.FONT_HERSHEY_SIMPLEX, 2, (255,0,0))
             for (x,y,w,h) in faces:
                 cv2.rectangle(frame,(x,y),(x+h,y+w),(255,0,0),2)
             cv2.imshow("Cam "+str(i),frame)
     else:
-        cv2.putText(frame,"No presence", (cols/2-200,rows/2-10), cv2.FONT_HERSHEY_SIMPLEX, 2, (0,0,255))
+        cv2.putText(frame,"No presence", (int(cols/2-200),int(rows/2-10)), cv2.FONT_HERSHEY_SIMPLEX, 2, (0,0,255))
         cv2.imshow("Cam "+str(i),frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break

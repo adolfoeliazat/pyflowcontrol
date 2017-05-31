@@ -5,8 +5,8 @@ import patternrecognition as pr
 import os
 
 faceCascade = cv2.CascadeClassifier('cascades/haarcascade_frontalface_default.xml')
-folderpath = 'bi/jpg/'
-dest='bi/jpg-faces-grey'
+folderpath = '../base_dividida/i016/'
+dest='../jpg-faces-grey/'
 filename = os.listdir(folderpath)
 for x in filename:
 	print(x)
@@ -45,10 +45,10 @@ for x in filename:
 
 	vetor=pr.calculaLBP(aux,2,2)
 	base_file.write(person_name+','+','.join(map(str,vetor))+"\n")
-	#    cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
+	cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
 
-	#cv2.imshow('Faces found' ,aux)
-	#cv2.waitKey(0)
+	cv2.imshow('Faces found' ,aux)
+	cv2.waitKey(0)
 
 base_file.write("\n")
 base_file.close()

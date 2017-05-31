@@ -8,8 +8,8 @@ import sys
 import os
 
 # Program adjustable variables
-grayscales = 1.5
-totalcameras = 1
+grayscales = 2
+totalcameras = 2
 warming_time = 2
 base_path = "base.csv"
 

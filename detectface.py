@@ -6,13 +6,13 @@ import time
 import patternrecognition as pr
 import sys
 import threading
-import RPi.GPIO as gpio
+#import RPi.GPIO as gpio
 from PIL import Image
 import zbarlight
 
 # Program adjustable variables
-grayscales = 2
-totalcameras=1
+grayscales = 1.7
+totalcameras=2
 PIR_sigpin = 11
 holdtime = 5
 
@@ -25,8 +25,8 @@ counter = 0
 face_cascade = cv2.CascadeClassifier('cascades/haarcascade_frontalface_default.xml')
 
 #Setting PIR output
-gpio.setmode(gpio.BOARD)
-gpio.setup(PIR_sigpin,gpio.IN)
+#gpio.setmode(gpio.BOARD)
+#gpio.setup(PIR_sigpin,gpio.IN)
 
 # Defining captures array
 for i in range(totalcameras):
@@ -47,8 +47,9 @@ while warm_end>time.time():
 
 # Main Loop
 print("Hit 'q' to quit...\n")
+presence=1
 while True:
-    presence = gpio.input(PIR_sigpin)
+    #presence = gpio.input(PIR_sigpin)
     if presence == 1 or hold == True:
         for i in range(totalcameras):
             ret,frame = cap[i].read()
@@ -77,10 +78,10 @@ while True:
                 rosto.append(npaux)
                 if counter == 0:
                     print("Person detected")
-                    vetor=pr.calculaLBP(rosto[0],2,2)
+                    vetor=pr.calculaLBP(rosto[0],1,1)
                     cv2.putText(frame,"Person 1", (x,y), cv2.FONT_HERSHEY_SIMPLEX, 2, 255)
                 else:
-                    vetor2=pr.calculaLBP(rosto[counter],2,2)
+                    vetor2=pr.calculaLBP(rosto[counter],1,1)
                     distancia=pr.distanciaEuclidiana(vetor,vetor2)
                     if distancia<0.1:
                         cv2.putText(frame,"Person 1", (x,y), cv2.FONT_HERSHEY_SIMPLEX, 2, 255)
