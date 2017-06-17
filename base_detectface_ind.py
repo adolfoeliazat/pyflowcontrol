@@ -14,8 +14,8 @@ def createBase(base_path):
     base_file = open(base_path,"w")
     header_string = ""
     for i in range(0,num_caracteristicas):
-        header_string += ", var"+str(i)                       
-    base_file.write("name " + header_string + "\n")
+        header_string += "var"+str(i)+", "
+    base_file.write(header_string + " name\n")
     base_file.close()
     base_file = open(base_path,"a")
     return base_file
@@ -27,8 +27,8 @@ def openBase(base_path):
         base_file = open(base_path,"w")
         header_string = ""
         for i in range(0,num_caracteristicas):
-            header_string += ", var"+str(i)                       
-        base_file.write("name " + header_string + "\n")
+            header_string += "var"+str(i)+ ", "
+        base_file.write(header_string + " name\n")
     base_file.close()
     base_file = open(base_path,"a")
     return base_file
@@ -101,9 +101,9 @@ for ind in ind_folder: # percorre a pasta que contem as pastas com fotos de cada
 			#print("ids" + ids[j][-13:-9])
 			#print("ind" + ind)
 			if ids[j][-13:-9] == ind:
-				base_ind.write('y'+','+','.join(map(str,dif))+"\n") # grava na base
+                                base_ind.write(str(dif).replace('[',' ').replace(']',' ')+", y\n") # grava na base
 			else:
-				base_ind.write('n'+','+','.join(map(str,dif))+"\n") # grava na base
+				base_ind.write(str(dif).replace('[',' ').replace(']',' ')+", n\n") # grava na base
 		j=j+1
 	reference_index=0;
 	histograms = [None]*(imagens_positivas+imagens_negativas)

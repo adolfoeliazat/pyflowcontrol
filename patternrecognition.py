@@ -41,7 +41,9 @@ def calculaLBP(src, quadrantesX, quadrantesY):
             #print(len(histograma))
             #print(pixelsQuadrante)
             for i in range(len(histograma)):
-                result[currquadY*quadrantesX*256+currquadX*256+i]=float(histograma[i])/float(pixelsQuadrante)
+                result[currquadY*quadrantesX*256+currquadX*256+i]=float(histograma[i])#/float(pixelsQuadrante)
+                #result[currquadY*quadrantesX*256+currquadX*256+i]=int(str("{:.6e}".format(float(histograma[i])/float(pixelsQuadrante))))
+                #result[currquadY*quadrantesX*256+currquadX*256+i]=int(histograma[i]/pixelsQuadrante)
                 #print(float(histograma[i])/float(pixelsQuadrante))
                 #histograma=inicializaVetor(256)
                 #print('Histograma: '+str(histograma))
