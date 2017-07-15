@@ -12,6 +12,9 @@ grayscales = 2
 totalcameras = 2
 warming_time = 2
 base_path = "base.csv"
+qx = 2
+qy = 2
+caracteristicas=256*qx*qy
 
 # Program definitions
 rosto = []
@@ -38,7 +41,7 @@ def openBase(base_path):
     except FileNotFoundError as exception:
         base_file = open(base_path,"a")
         header_string = ""
-        for i in range(0,1024):
+        for i in range(0,caracteristicas):
             header_string += ", var"+str(i)                       
         base_file.write("name " + header_string + "\n")
     base_file.close()
