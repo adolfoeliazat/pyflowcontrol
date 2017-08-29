@@ -11,11 +11,14 @@ quadrantesY=2
 base_name = str(quadrantesX)+"qx"+ str(quadrantesY)+"qy"
 num_caracteristicas=quadrantesX*quadrantesY*256
 def createBase(base_path):
+    
     base_file = open(base_path,"w")
-    header_string = ""
-    for i in range(0,num_caracteristicas):
-        header_string += "var"+str(i)+", "
-    base_file.write(header_string + " name\n")
+    if "pythonCSV" not in base_path:
+        header_string = ""
+        for i in range(0,num_caracteristicas):
+            header_string += "var"+str(i)+", "
+        base_file.write(header_string + " name\n")
+
     base_file.close()
     base_file = open(base_path,"a")
     return base_file
@@ -56,10 +59,10 @@ def lbp(file):
 
 	
 
-faceCascade = cv2.CascadeClassifier('cascades/haarcascade_frontalface_default.xml')
-folderpath = '../base_dividida/'
-dest='./jpg-faces-grey/'
-dir_aleatorio='../muct/'
+faceCascade = cv2.CascadeClassifier('../cascades/haarcascade_frontalface_default.xml')
+folderpath = '../../samples/'
+dest='../../samples_out/'
+dir_aleatorio='../../muct/'
 ind_folder = os.listdir(folderpath)
 histograms = [None]*(imagens_positivas+imagens_negativas)
 ids = [None]*(imagens_positivas+imagens_negativas)
@@ -93,6 +96,7 @@ for ind in ind_folder: # percorre a pasta que contem as pastas com fotos de cada
 		
 	j=0;
 	base_ind=createBase(folderpath+ind+'/'+ind+'-'+base_name+'.csv')
+	base_python=createBase(folderpath+ind+'/'+ind+'-'+base_name+'.pythonCSV.csv')
 	for h in histograms: # percorre os histogrmas
 		if h is None:
 			pass
@@ -102,8 +106,10 @@ for ind in ind_folder: # percorre a pasta que contem as pastas com fotos de cada
 			#print("ind" + ind)
 			if ids[j][-13:-9] == ind:
                                 base_ind.write(str(dif).replace('[',' ').replace(']',' ')+", y\n") # grava na base
+                                base_python.write(str(dif).replace('[',' ').replace(']',' ')+", 1\n")
 			else:
 				base_ind.write(str(dif).replace('[',' ').replace(']',' ')+", n\n") # grava na base
+				base_python.write(str(dif).replace('[',' ').replace(']',' ')+", -1\n")
 		j=j+1
 	reference_index=0;
 	histograms = [None]*(imagens_positivas+imagens_negativas)
