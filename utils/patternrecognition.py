@@ -123,6 +123,6 @@ def diferenca(caracteristicaA, caracteristicaB):
     resultAll=inicializaVetor(len(caracteristicaA))
     for i in range(len(resultAll)):
         distanciaPontual=caracteristicaA[i]-caracteristicaB[i]
-        resultAll[i]=abs(distanciaPontual)
+        resultAll[i]=int(abs(distanciaPontual))
     return resultAll
 

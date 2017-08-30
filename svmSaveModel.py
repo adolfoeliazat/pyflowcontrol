@@ -2,6 +2,7 @@ import csv, os, sys
 import numpy as np
 import os
 import SVM
+import pickle
 def readData(filename, header=True):
     data, header = [], None
     with open(filename, 'r') as csvfile:
@@ -29,9 +30,13 @@ for csvpath in csvs:
         data = data.astype(float)
         X, y = data[:,0:-1], data[:,-1].astype(int)
         model = SVM.SVM(max_iter=10000, kernel_type='linear', C=1.0, epsilon=0.00001)
+        #model.fit(X,y)
+        f = open('modelo.model', 'wb')
+        #pickle.dump(model,f)
         support_vectors, iterations = model.fit(X, y)
         sv_count = support_vectors.shape[0]
         y_hat = model.predict(X)
+        pickle.dump(model,f)
         acc = calc_acc(y, y_hat)
         #modelfile = open(csvpath[:4]+".model",'w')
         #modelfile.write(str(model));
@@ -41,6 +46,7 @@ for csvpath in csvs:
         #print("w:\t%s\t" % (str(model.w).rstrip('\n')), end='')
         print("accuracy:\t%.3f\t" % (acc), end='')
         print("Converged after iterations \t%d\t" % (iterations))
+'''
 print('')
 (data, _) = readData("y_haty.txt", header=False)
 data = data.astype(float)
@@ -52,3 +58,4 @@ data = data.astype(float)
 X = data[:,0:-1]
 y_hat = model.predict(X)
 print(y_hat)
+'''

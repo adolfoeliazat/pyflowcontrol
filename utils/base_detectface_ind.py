@@ -105,11 +105,13 @@ for ind in ind_folder: # percorre a pasta que contem as pastas com fotos de cada
 			#print("ids" + ids[j][-13:-9])
 			#print("ind" + ind)
 			if ids[j][-13:-9] == ind:
-                                base_ind.write(str(dif).replace('[',' ').replace(']',' ')+", y\n") # grava na base
-                                base_python.write(str(dif).replace('[',' ').replace(']',' ')+", 1\n")
+                                string = str(dif).replace('[','').replace(']','')#.replace('.0','')
+                                base_ind.write(string +", y\n") # grava na base
+                                base_python.write(string +", 1\n")
 			else:
-				base_ind.write(str(dif).replace('[',' ').replace(']',' ')+", n\n") # grava na base
-				base_python.write(str(dif).replace('[',' ').replace(']',' ')+", -1\n")
+				string = str(dif).replace('[','').replace(']','')#.replace('.0','')
+				base_ind.write(string+", n\n") # grava na base
+				base_python.write(string+", -1\n")
 		j=j+1
 	reference_index=0;
 	histograms = [None]*(imagens_positivas+imagens_negativas)
