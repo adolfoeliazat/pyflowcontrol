@@ -20,8 +20,12 @@ def calc_acc(y, y_hat):
     TN = np.sum(y_hat[idx] == y[idx])
     return float(TP + TN)/len(y)
 
-csvs = os.listdir(".")
-filepath = os.path.dirname(os.path.abspath(__file__))
+csvs = os.listdir("samples/diffPythonCSV")
+#print(csvs)
+print(os.path.abspath(__file__))
+print(os.path.dirname(os.path.abspath(__file__)))
+filepath = os.path.dirname(os.path.abspath(__file__))+"/samples/diffPythonCSV/"
+#print(filepath)
 for csvpath in csvs:
 #    wekacsv = open(csv,"r")
     if ".pythonCSV." in csvpath:
@@ -31,7 +35,7 @@ for csvpath in csvs:
         X, y = data[:,0:-1], data[:,-1].astype(int)
         model = SVM.SVM(max_iter=10000, kernel_type='linear', C=1.0, epsilon=0.00001)
         #model.fit(X,y)
-        f = open('modelo.model', 'wb')
+        f = open(filepath+csvpath.replace(".pythonCSV.csv",".model"), 'wb')
         #pickle.dump(model,f)
         support_vectors, iterations = model.fit(X, y)
         sv_count = support_vectors.shape[0]

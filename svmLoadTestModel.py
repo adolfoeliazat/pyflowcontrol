@@ -21,10 +21,13 @@ def calc_acc(y, y_hat):
     return float(TP + TN)/len(y)
 
 filepath = os.path.dirname(os.path.abspath(__file__))
-
-f = open('modelo.model','rb')
+modelnumber = input("Insert the model you are trying to test: ")
+modelpath = 'samples/diffPythonCSV/'+modelnumber+"-2qx2qy.model"
+f = open(modelpath,'rb')
 model = pickle.load(f)
-(data, _) = readData("{}/{}".format(filepath,'i091-2qx2qy.pythonCSVnew.csv'), header=False)
+samplenumber = input("Insert the sample you are trying to test: ")
+samplepath = 'samples/diffPythonCSV/'+samplenumber+"-2qx2qy.pythonCSV.csv"
+(data, _) = readData("{}/{}".format(filepath,samplepath), header=False)
 data = data.astype(float)
 X, y = data[:,0:-1], data[:,-1].astype(int)
 y_hat= model.predict(X)
