@@ -3,6 +3,11 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Generated log's, CSV's and models
+*.model
+*.csv
+*.log
+
 # C extensions
 *.so
 
