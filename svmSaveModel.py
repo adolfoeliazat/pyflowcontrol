@@ -33,7 +33,7 @@ for csvpath in csvs:
         (data, _) = readData("{}/{}".format(filepath,csvpath), header=False)
         data = data.astype(float)
         X, y = data[:,0:-1], data[:,-1].astype(int)
-        model = SVM.SVM(max_iter=10000, kernel_type='linear', C=1.0, epsilon=0.00001)
+        model = SVM.SVM(max_iter=10000, kernel_type='linear', C=1.0, epsilon=0.001)
         #model.fit(X,y)
         f = open(filepath+csvpath.replace(".pythonCSV.csv",".model"), 'wb')
         #pickle.dump(model,f)

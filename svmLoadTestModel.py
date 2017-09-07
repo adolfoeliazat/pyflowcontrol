@@ -28,7 +28,12 @@ model = pickle.load(f)
 samplenumber = input("Insert the sample you are trying to test: ")
 samplepath = 'samples/diffPythonCSV/'+samplenumber+"-2qx2qy.pythonCSV.csv"
 (data, _) = readData("{}/{}".format(filepath,samplepath), header=False)
+print(data)
+print(type(data))
 data = data.astype(float)
 X, y = data[:,0:-1], data[:,-1].astype(int)
+print(X)
+print(type(X))
 y_hat= model.predict(X)
+
 print(y_hat)
