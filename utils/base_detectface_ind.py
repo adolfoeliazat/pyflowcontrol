@@ -8,7 +8,7 @@ import random
 # Caso a pasta relativa a imagem contenha menos imagens do que o desejado, a quantidade sera
 # reduzida ao numero de imagens existentes
 desejado_positivas = 15
-desejado_negativas = 30
+desejado_negativas = 45
 
 imagens_positivas = desejado_positivas
 imagens_negativas = desejado_negativas
@@ -17,8 +17,9 @@ quadrantesY=2
 base_name = str(quadrantesX)+"qx"+ str(quadrantesY)+"qy"
 num_caracteristicas=quadrantesX*quadrantesY*256
 faceCascade = cv2.CascadeClassifier('../cascades/haarcascade_frontalface_default.xml')
-folderpath = '../samples/realLifeSamples/'
+folderpath = '../samples/muct/'
 dir_aleatorio='../samples/muct/'
+output_csv_folder='../samples/diffPythonCSV/'
 ind_folder = os.listdir(folderpath)
 histograms = [None]*(imagens_positivas+imagens_negativas)
 ids = [None]*(imagens_positivas+imagens_negativas)
@@ -130,8 +131,10 @@ for ind in ind_folder: # percorre a pasta que contem as pastas com fotos de cada
         print('')
         
     j=0;
-    base_ind=createBase(folderpath+ind+'/'+ind+'-'+base_name+'.csv')
-    base_python=createBase(folderpath+ind+'/'+ind+'-'+base_name+'.pythonCSV.csv')
+    #base_ind=createBase(folderpath+ind+'/'+ind+'-'+base_name+'.csv')
+    #base_python=createBase(folderpath+ind+'/'+ind+'-'+base_name+'.pythonCSV.csv')
+    base_ind=createBase(output_csv_folder+ind+'-'+base_name+'.csv')
+    base_python=createBase(output_csv_folder+ind+'-'+base_name+'.pythonCSV.csv')
     for h in histograms: # percorre os histogrmas
         if h is None:
             print("passou nulo")

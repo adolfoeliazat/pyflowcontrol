@@ -20,23 +20,17 @@ def calc_acc(y, y_hat):
     TN = np.sum(y_hat[idx] == y[idx])
     return float(TP + TN)/len(y)
 
-csvs = os.listdir("samples/diffPythonCSV")
-#print(csvs)
-print(os.path.abspath(__file__))
-print(os.path.dirname(os.path.abspath(__file__)))
-filepath = os.path.dirname(os.path.abspath(__file__))+"/samples/diffPythonCSV/"
-#print(filepath)
+csvs_folder = "samples/diffPythonCSV/"
+models_folder = "samples/generatedModels/"
+csvs = os.listdir(csvs_folder)
 for csvpath in csvs:
-#    wekacsv = open(csv,"r")
     if ".pythonCSV." in csvpath:
-        #print(csvpath)
-        (data, _) = readData("{}/{}".format(filepath,csvpath), header=False)
+        (data, _) = readData("{}/{}".format(csvs_folder,csvpath), header=False)
         data = data.astype(float)
         X, y = data[:,0:-1], data[:,-1].astype(int)
         model = SVM.SVM(max_iter=10000, kernel_type='linear', C=1.0, epsilon=0.001)
-        #model.fit(X,y)
-        f = open(filepath+csvpath.replace(".pythonCSV.csv",".model"), 'wb')
-        #pickle.dump(model,f)
+        model.fit(X,y)
+        f = open(models_folder+csvpath.replace(".pythonCSV.csv",".model"), 'wb')
         support_vectors, iterations = model.fit(X, y)
         sv_count = support_vectors.shape[0]
         y_hat = model.predict(X)
@@ -50,16 +44,3 @@ for csvpath in csvs:
         #print("w:\t%s\t" % (str(model.w).rstrip('\n')), end='')
         print("accuracy:\t%.3f\t" % (acc), end='')
         print("Converged after iterations \t%d\t" % (iterations))
-'''
-print('')
-(data, _) = readData("y_haty.txt", header=False)
-data = data.astype(float)
-X = data[:,0:-1]
-y_hat = model.predict(X)
-print(y_hat)
-(data, _) = readData("y_hatn.txt", header=False)
-data = data.astype(float)
-X = data[:,0:-1]
-y_hat = model.predict(X)
-print(y_hat)
-'''
