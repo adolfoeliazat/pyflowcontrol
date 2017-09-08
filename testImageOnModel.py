@@ -5,11 +5,11 @@ import SVM
 import cv2
 import numpy as np
 
-path = "samples/testImages/i091/"
-model = pickle.load(open("samples/diffPythonCSV/i092-2qx2qy.model",'rb'))
 faceCascade = cv2.CascadeClassifier('cascades/haarcascade_frontalface_default.xml')
 quadrantesX = 2
 quadrantesY = 2
+modelos = []
+success_rates = []
 def readData(filename, header=True):
     data, header = [], None
     with open(filename, 'r') as csvfile:
@@ -47,30 +47,54 @@ def lbp(file):
 	    for (x, y, w, h) in faces:
 	        aux=gray[y:y+h,x:x+w]
 	    #print(aux)
-	    cv2.imshow("",aux)
-	    cv2.waitKey(0)
+	    #cv2.imshow("",aux)
+	    #cv2.waitKey(0)
 	    vetor=pr.calculaLBP(aux,quadrantesX,quadrantesY)
 	    return vetor
 
 	
 
-files = os.listdir(path);
-difs = [None]*(len(files)-2)
-for file in files:
-    if "qa" in file:
-        imgref=lbp(path+file)
-i=0
-for file in files:
-    if ".jpg" in file and "qa" not in file:
-        currlbp = lbp(path+file)
-        if(currlbp) is not None:
-            difs[i]=pr.diferenca(currlbp,imgref)
-            i=i+1
-        else:
-            difs[i] = [255.0]*1024
-            i=i+1
-print(np.array(difs))
-print(type(np.array(difs)))
-y_hat = model.predict(np.array(difs))
-print(y_hat)
-        
+def test_model(testModel,testImages):
+    #model_to_test = str(input("Insert the model number you are trying to test (ex: i080): "))
+    #images_to_test = str(input("Insert the images number you are using to test (ex: i080): "))
+    model_to_test = '{:03d}'.format(testModel)
+    images_to_test = '{:03d}'.format(testImages)
+    path = "samples/muct/i"+images_to_test+"/"
+    model_path = "samples/generatedModels/i"+model_to_test+"-2qx2qy.model"
+    modelos.append(model_path)
+    model = pickle.load(open(model_path,'rb'))
+
+    files = os.listdir(path);
+    #print(files)
+
+    for file in files:
+        if "qa" in file:
+            imgref=lbp(path+file)
+            #print('achou')
+    difs = []
+    for file in files:
+        if ".jpg" in file and "qa" not in file:
+            currlbp = lbp(path+file)
+            if(currlbp) is not None:
+                difs.append(pr.diferenca(currlbp,imgref))
+            else:
+                difs.append([255.0]*quadrantesX*quadrantesY*256)
+    #print(np.array(difs))
+    #print(type(np.array(difs)))
+    y_hat = model.predict(np.array(difs))
+    successes = 0
+    for number in y_hat:
+        if number == 1:
+            successes = successes +1
+    print(successes / len(y_hat))
+    success_rates.append(successes / len(y_hat))
+    print(y_hat)
+
+for i in range(91):
+    test_model(i,i)
+print("=================================")
+print("\tRESULTADO FINAL")
+print("=================================")
+for i in range(len(modelos)):
+    print(modelos[i]+"\t"+str(success_rates[i]))
+    

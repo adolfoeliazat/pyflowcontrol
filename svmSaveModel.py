@@ -28,7 +28,7 @@ for csvpath in csvs:
         (data, _) = readData("{}/{}".format(csvs_folder,csvpath), header=False)
         data = data.astype(float)
         X, y = data[:,0:-1], data[:,-1].astype(int)
-        model = SVM.SVM(max_iter=10000, kernel_type='linear', C=1.0, epsilon=0.001)
+        model = SVM.SVM(max_iter=10000, kernel_type='linear', C=1.0, epsilon=0.00001)
         model.fit(X,y)
         f = open(models_folder+csvpath.replace(".pythonCSV.csv",".model"), 'wb')
         support_vectors, iterations = model.fit(X, y)
