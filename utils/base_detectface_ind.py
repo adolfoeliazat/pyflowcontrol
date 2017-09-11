@@ -19,7 +19,8 @@ num_caracteristicas=quadrantesX*quadrantesY*256
 faceCascade = cv2.CascadeClassifier('../cascades/haarcascade_frontalface_default.xml')
 folderpath = '../samples/muct/'
 dir_aleatorio='../samples/muct/'
-output_csv_folder='../samples/diffPythonCSV/'
+output_python_csv_folder='../samples/diffPythonCSV/'
+output_weka_csv_folder='../samples/diffWekaCSV/'
 ind_folder = os.listdir(folderpath)
 histograms = [None]*(imagens_positivas+imagens_negativas)
 ids = [None]*(imagens_positivas+imagens_negativas)
@@ -133,8 +134,9 @@ for ind in ind_folder: # percorre a pasta que contem as pastas com fotos de cada
     j=0;
     #base_ind=createBase(folderpath+ind+'/'+ind+'-'+base_name+'.csv')
     #base_python=createBase(folderpath+ind+'/'+ind+'-'+base_name+'.pythonCSV.csv')
-    base_ind=createBase(output_csv_folder+ind+'-'+base_name+'.csv')
-    base_python=createBase(output_csv_folder+ind+'-'+base_name+'.pythonCSV.csv')
+    strcfg = base_name+'-'+str(desejado_positivas)+'P'+str(desejado_negativas)+'N'
+    base_ind=createBase(output_weka_csv_folder+ind+'-'+strcfg+'.wekaCSV.csv')
+    base_python=createBase(output_python_csv_folder+ind+'-'+strcfg+'.pythonCSV.csv')
     for h in histograms: # percorre os histogrmas
         if h is None:
             print("passou nulo")

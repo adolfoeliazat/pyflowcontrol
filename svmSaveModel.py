@@ -3,6 +3,9 @@ import numpy as np
 import os
 import SVM
 import pickle
+
+epsilon = 0.00001
+
 def readData(filename, header=True):
     data, header = [], None
     with open(filename, 'r') as csvfile:
@@ -28,9 +31,10 @@ for csvpath in csvs:
         (data, _) = readData("{}/{}".format(csvs_folder,csvpath), header=False)
         data = data.astype(float)
         X, y = data[:,0:-1], data[:,-1].astype(int)
-        model = SVM.SVM(max_iter=10000, kernel_type='linear', C=1.0, epsilon=0.00001)
+        model = SVM.SVM(max_iter=10000, kernel_type='linear', C=1.0, epsilon=epsilon)
         model.fit(X,y)
-        f = open(models_folder+csvpath.replace(".pythonCSV.csv",".model"), 'wb')
+        epsilon_base_name = 'e'+str(epsilon)+".model"
+        f = open(models_folder+csvpath.replace(".pythonCSV.csv",'-'+epsilon_base_name), 'wb')
         support_vectors, iterations = model.fit(X, y)
         sv_count = support_vectors.shape[0]
         y_hat = model.predict(X)

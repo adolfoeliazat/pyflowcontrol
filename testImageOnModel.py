@@ -5,9 +5,21 @@ import SVM
 import cv2
 import numpy as np
 
+# Here we define if you are testing the model using it's own images (randomic = False) or other images (randomic = True)
+randomic = True
+# Here you can define the inferior and superior individual sample number (ie: 0 and 90 for i000 through i090)
+sample_inferior = 0
+sample_superior = 90
 faceCascade = cv2.CascadeClassifier('cascades/haarcascade_frontalface_default.xml')
 quadrantesX = 2
 quadrantesY = 2
+desejado_positivas = 15
+desejado_negativas = 30
+epsilon = 0.00001
+
+q_base_name = str(quadrantesX)+'qx'+str(quadrantesY)+'qy'
+PN_base_name = str(desejado_positivas)+'P'+str(desejado_negativas)+'N'
+epsilon_base_name = 'e'+str(epsilon)
 modelos = []
 success_rates = []
 def readData(filename, header=True):
@@ -54,13 +66,11 @@ def lbp(file):
 
 	
 
-def test_model(testModel,testImages):
-    #model_to_test = str(input("Insert the model number you are trying to test (ex: i080): "))
-    #images_to_test = str(input("Insert the images number you are using to test (ex: i080): "))
+def test_model(testModel,testImages): # this function receives model number and which set of images it is used to test
     model_to_test = '{:03d}'.format(testModel)
     images_to_test = '{:03d}'.format(testImages)
     path = "samples/muct/i"+images_to_test+"/"
-    model_path = "samples/generatedModels/i"+model_to_test+"-2qx2qy.model"
+    model_path = "samples/generatedModels/i"+model_to_test+"-"+q_base_name+"-"+PN_base_name+"-"+epsilon_base_name+".model"
     modelos.append(model_path)
     model = pickle.load(open(model_path,'rb'))
 
@@ -86,15 +96,29 @@ def test_model(testModel,testImages):
     for number in y_hat:
         if number == 1:
             successes = successes +1
-    print(successes / len(y_hat))
-    success_rates.append(successes / len(y_hat))
+    true_success = 0.0
+    if randomic == True:
+        true_success = 1.0-(successes / len(y_hat))
+    else:
+        true_success = (successes / len(y_hat))
+
+    print(true_success)
+    success_rates.append(true_success)
     print(y_hat)
 
-for i in range(91):
-    test_model(i,i)
+
+if randomic == True:
+    for i in range(sample_inferior,sample_superior+1):
+        if i == sample_superior:
+            test_model(i,sample_inferior)
+        else:
+            test_model(i,i+1)
+else:
+    for i in range(sample_inferior,sample_superior+1): # loop through models i000 and i090
+        test_model(i,i)
 print("=================================")
-print("\tRESULTADO FINAL")
+print("\tFINAL RESULT")
 print("=================================")
-for i in range(len(modelos)):
+for i in range(len(modelos)): # prints out the final results
     print(modelos[i]+"\t"+str(success_rates[i]))
     
