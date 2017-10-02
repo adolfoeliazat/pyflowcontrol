@@ -6,7 +6,7 @@ import cv2
 import numpy as np
 
 # Here we define if you are testing the model using it's own images (randomic = False) or other images (randomic = True)
-randomic = True
+randomic = False
 # Here you can define the inferior and superior individual sample number (ie: 0 and 90 for i000 through i090)
 sample_inferior = 0
 sample_superior = 90
@@ -14,7 +14,7 @@ faceCascade = cv2.CascadeClassifier('cascades/haarcascade_frontalface_default.xm
 quadrantesX = 2
 quadrantesY = 2
 desejado_positivas = 15
-desejado_negativas = 30
+desejado_negativas = 15
 epsilon = 0.00001
 
 q_base_name = str(quadrantesX)+'qx'+str(quadrantesY)+'qy'
@@ -70,20 +70,22 @@ def test_model(testModel,testImages): # this function receives model number and 
     model_to_test = '{:03d}'.format(testModel)
     images_to_test = '{:03d}'.format(testImages)
     path = "samples/muct/i"+images_to_test+"/"
+    pathref = "samples/muct/i"+model_to_test+"/"
     model_path = "samples/generatedModels/i"+model_to_test+"-"+q_base_name+"-"+PN_base_name+"-"+epsilon_base_name+".model"
     modelos.append(model_path)
     model = pickle.load(open(model_path,'rb'))
 
     files = os.listdir(path);
+    filesref = os.listdir(pathref);
     #print(files)
 
-    for file in files:
+    for file in filesref:
         if "qa" in file:
-            imgref=lbp(path+file)
+            imgref=lbp(pathref+file)
             #print('achou')
     difs = []
     for file in files:
-        if ".jpg" in file and "qa" not in file:
+        if ".jpg" in file or ".JPG" in file and "qa" not in file:
             currlbp = lbp(path+file)
             if(currlbp) is not None:
                 difs.append(pr.diferenca(currlbp,imgref))

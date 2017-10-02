@@ -8,7 +8,7 @@ import random
 # Caso a pasta relativa a imagem contenha menos imagens do que o desejado, a quantidade sera
 # reduzida ao numero de imagens existentes
 desejado_positivas = 15
-desejado_negativas = 45
+desejado_negativas = 15
 
 imagens_positivas = desejado_positivas
 imagens_negativas = desejado_negativas
@@ -63,11 +63,22 @@ def lbp(file):
             print(" <=== FACE NAO DETECTADA, REMOVIDO DA BASE",end='')
             return None
     else:
+        maiorarea=0
+        xaux=0
+        yaux=0
+        waux=0
+        haux=0
         for (x, y, w, h) in faces:
-            aux=gray[y:y+h,x:x+w]
+            if w*h > maiorarea:
+                maiorarea=w*h
+                xaux=x
+                yaux=y
+                waux=w
+                haux=h
+        aux=gray[yaux:yaux+haux,xaux:xaux+waux]
         #print(aux)
         #cv2.imshow("",aux)
-        #cv2.waitKey(0)
+        #cv2.imwrite(file.replace(".jpg",'')+'-face.jpg',aux)        #cv2.waitKey(0)
         vetor=pr.calculaLBP(aux,quadrantesX,quadrantesY)
         return vetor
    
@@ -85,10 +96,11 @@ for ind in ind_folder: # percorre a pasta que contem as pastas com fotos de cada
     imagens_positivas = desejado_positivas
     imagens_negativas = desejado_negativas
     pictures = os.listdir(folderpath+ind)
+    #print(pictures)
     randir = os.listdir(dir_aleatorio)
     #print(pictures)
     for picture in pictures: #remove arquivos nao .jpg da lista de imagens
-        if ".jpg" not in picture:
+        if ".jpg" not in picture and ".JPG" not in picture:
             #print("not jpg: "+picture)
             pictures.remove(picture)
     for picture in pictures: #redefine o path certo
