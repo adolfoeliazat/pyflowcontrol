@@ -3,12 +3,13 @@ import cv2
 import patternrecognition as pr
 import os
 import random
+import pickle
 
 # especificacao de quantas imagens positivas e quantas imagens negativas se quer extrair os dados.
 # Caso a pasta relativa a imagem contenha menos imagens do que o desejado, a quantidade sera
 # reduzida ao numero de imagens existentes
 desejado_positivas = 15
-desejado_negativas = 15
+desejado_negativas = 0
 
 imagens_positivas = desejado_positivas
 imagens_negativas = desejado_negativas
@@ -17,10 +18,11 @@ quadrantesY=2
 base_name = str(quadrantesX)+"qx"+ str(quadrantesY)+"qy"
 num_caracteristicas=quadrantesX*quadrantesY*256
 faceCascade = cv2.CascadeClassifier('../cascades/haarcascade_frontalface_default.xml')
-folderpath = '../samples/muct/'
+folderpath = '../samples/rlSamples/'
 dir_aleatorio='../samples/muct/'
 output_python_csv_folder='../samples/diffPythonCSV/'
 output_weka_csv_folder='../samples/diffWekaCSV/'
+output_lbp_folder='../samples/LBPind/'
 ind_folder = os.listdir(folderpath)
 histograms = [None]*(imagens_positivas+imagens_negativas)
 ids = [None]*(imagens_positivas+imagens_negativas)
@@ -80,13 +82,14 @@ def lbp(file):
         #cv2.imshow("",aux)
         #cv2.imwrite(file.replace(".jpg",'')+'-face.jpg',aux)        #cv2.waitKey(0)
         vetor=pr.calculaLBP(aux,quadrantesX,quadrantesY)
+        #print(vetor)
         return vetor
    
 
 ##############################
 ###     HERE IT STARTS    ####
 ##############################
-
+ind_folder.sort()
 for ind in ind_folder: # percorre a pasta que contem as pastas com fotos de cada individuo
     print("==============================")
     print("\tIMAGEM:\t"+ind)
@@ -130,10 +133,11 @@ for ind in ind_folder: # percorre a pasta que contem as pastas com fotos de cada
     for x in pictures: # abre as imagens positivas e negativas, acha a referencia e calcula o lbp pra todas
         print(x,end=' ')
         print(" "+str(i),end='')
-        histograms.append(lbp(x)) # calcula histograma lbp de cada imagem 
+        histograms.append(lbp(x)) # calcula histograma lbp de cada imagem
+        
         if "qa" in x and ind in x: # verifica se a foto é a foto referencia e pertence ao indivíduo
             reference_index = i # salva indice da foto referencia
-            print('<== IMAGEM REFERENCIA: ',reference_index,end='')            
+            print(' <== IMAGEM REFERENCIA: ',reference_index,end='')            
         if i == imagens_positivas-1:
             print("\n==============================")
             print("\t  NEGATIVAS")
@@ -144,9 +148,21 @@ for ind in ind_folder: # percorre a pasta que contem as pastas com fotos de cada
         print('')
         
     j=0;
+
+    strcfg = base_name+'-'+str(desejado_positivas)+'P'+str(desejado_negativas)+'N'
+
+    #faz swap do histograma da imagem de referencia para o primeiro histograma
+    # e entao salva os histogramas em um arquivo binario
+    aux=histograms[0]
+    histograms[0]=histograms[reference_index]
+    histograms[reference_index]=aux
+    f = open(output_lbp_folder+ind+"-"+base_name+".lbp","wb")
+    pickle.dump(histograms,f)
+    reference_index=0
+    print('arquivo criado lbp')
     #base_ind=createBase(folderpath+ind+'/'+ind+'-'+base_name+'.csv')
     #base_python=createBase(folderpath+ind+'/'+ind+'-'+base_name+'.pythonCSV.csv')
-    strcfg = base_name+'-'+str(desejado_positivas)+'P'+str(desejado_negativas)+'N'
+    
     base_ind=createBase(output_weka_csv_folder+ind+'-'+strcfg+'.wekaCSV.csv')
     base_python=createBase(output_python_csv_folder+ind+'-'+strcfg+'.pythonCSV.csv')
     for h in histograms: # percorre os histogrmas
@@ -166,9 +182,8 @@ for ind in ind_folder: # percorre a pasta que contem as pastas com fotos de cada
                 base_ind.write(string+", n\n") # grava na base
                 base_python.write(string+", -1\n")
         j=j+1
+        strcfg = base_name+'-'+str(desejado_positivas)+'P'+str(desejado_negativas)+'N'
     
-    
- 
         
         
     

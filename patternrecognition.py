@@ -5,6 +5,7 @@ import numpy
 
 def calculaLBP(src, quadrantesX, quadrantesY):
     #int i,j,pixelsQuadrante,inicioX,inicioY,fimX,fimY;
+    #print('testttttttttt')
     if len(src.shape) is 2:
         rows,cols = src.shape
         channels=1
@@ -14,8 +15,8 @@ def calculaLBP(src, quadrantesX, quadrantesY):
     #print(rows)
     #print(cols)
     #asMat=cv2.cv.fromarray(src)
-    histograma=inicializaVetor(256)
-    result=inicializaVetor(256*quadrantesX*quadrantesY)
+    histograma=[0]*256
+    result=[0]*(256*quadrantesX*quadrantesY)
     #Copia a imagem origem e a seta para o padrao binario dela mesma.
     #CvMat dst;
     if channels>1:
@@ -41,18 +42,15 @@ def calculaLBP(src, quadrantesX, quadrantesY):
             #print(len(histograma))
             #print(pixelsQuadrante)
             for i in range(len(histograma)):
-                result[currquadY*quadrantesX*256+currquadX*256+i]=float(histograma[i])#/float(pixelsQuadrante)
+                result[currquadY*quadrantesX*256+currquadX*256+i]=float(histograma[i])/float(pixelsQuadrante)
                 #result[currquadY*quadrantesX*256+currquadX*256+i]=int(str("{:.6e}".format(float(histograma[i])/float(pixelsQuadrante))))
                 #result[currquadY*quadrantesX*256+currquadX*256+i]=int(histograma[i]/pixelsQuadrante)
                 #print(float(histograma[i])/float(pixelsQuadrante))
                 #histograma=inicializaVetor(256)
                 #print('Histograma: '+str(histograma))
-            histograma=inicializaVetor(256)
+            
+    #print(result)
     return result
-
-def inicializaVetor(tamanho):
-    vetor=[0 for i in range(tamanho)]
-    return vetor
 
 def lbp(src):
     #src=cv2.cv.fromarray(srcnp)
@@ -84,8 +82,13 @@ def lbp(src):
             if src[i+1,j+1] >= src[i,j]:
                 decimal+=1
             dst[i,j] = decimal
+            if decimal > 255:
+                print('valor errado')
             decimal=0
     #cv2.imwrite("LBP.jpg",numpy.asarray(dst))
+    #cv2.imshow("test",dst)
+    #cv2.waitKey(0)
+    #print(dst)
     return dst
 
 def lbp_native(src):
@@ -101,14 +104,12 @@ def lbp_native(src):
 	print(np.array(hist, dtype=np.float32))
 	return dst
 
-
-
 def distanciaEuclidiana(caracteristicaA, caracteristicaB):
 
     if len(caracteristicaA)!= len(caracteristicaB):
         print("Caracteristicas com vetor de tamanho diferente! Impossivel comparar")
         return -1
-    resultAll=inicializaVetor(len(caracteristicaA))
+    resultAll=[0]*len(caracteristicaA)
     for i in range(len(resultAll)):
         distanciaPontual=caracteristicaA[i]-caracteristicaB[i]
         resultAll[i]=distanciaPontual*distanciaPontual
@@ -120,7 +121,7 @@ def diferenca(caracteristicaA, caracteristicaB):
     if len(caracteristicaA)!= len(caracteristicaB):
         print("Caracteristicas com vetor de tamanho diferente! Impossivel comparar")
         return -1
-    resultAll=inicializaVetor(len(caracteristicaA))
+    resultAll=[0]*len(caracteristicaA)
     for i in range(len(resultAll)):
         distanciaPontual=caracteristicaA[i]-caracteristicaB[i]
         resultAll[i]=abs(distanciaPontual)
